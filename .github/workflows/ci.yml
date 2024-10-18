@@ -27,7 +27,7 @@ jobs:
       matrix:
         build_type: [debug, release]
     container:
-      image: ghcr.io/ten-framework/ten_agent_build:0.1.0
+      image: ghcr.io/ten-framework/ten_agent_build:bc5e7ac
     steps:
       - uses: actions/checkout@v4
         with:
