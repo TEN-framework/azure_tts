@@ -3,4 +3,4 @@ out
 .gn
 .gnfiles
 compile_commands.json
-
+lib/libazure_tts.so
