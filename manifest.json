@@ -1,7 +1,7 @@
 {
     "type": "extension",
     "name": "azure_tts",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "dependencies": [
         {
             "type": "system",
@@ -12,6 +12,11 @@
             "type": "system",
             "name": "azure_speech_sdk",
             "version": "1.38.0"
+        },
+        {
+            "type": "system",
+            "name": "nlohmann_json",
+            "version": "=3.11.2"
         }
     ],
     "api": {
@@ -23,6 +28,18 @@
                 "type": "string"
             },
             "azure_synthesis_voice_name": {
+                "type": "string"
+            },
+            "style": {
+                "type": "string"
+            },
+            "prosody": {
+                "type": "string"
+            },
+            "language": {
+                "type": "string"
+            },
+            "role": {
                 "type": "string"
             }
         },

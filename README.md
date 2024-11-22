@@ -16,6 +16,10 @@ TEN extension of [azure Text to speech service](https://learn.microsoft.com/en-u
 | `azure_subscription_key` | `string` | `""` | Azure Speech service subscription key | 
 | `azure_subscription_region` | `string` | `""` | Azure Speech service subscription region | 
 | `azure_synthesis_voice_name` | `string` | `""` | e.g., `en-US-AdamMultilingualNeural`, check more available voices in [languages and voices support](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts) | 
+| `prosody` | `string` | `""` | Azure Speech prosody |
+| `language` | `string` | `""` | Azure Speech language |
+| `role` | `string` | `""` | Azure Speech role |
+| `style` | `string` | `""` | Azure Speech style |
 
 ## Development
 
