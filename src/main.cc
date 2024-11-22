@@ -10,13 +10,36 @@
 #include <cstdint>
 #include <cstdio>
 #include <memory>
+#include <string>
 
 #include "log.h"
 #include "ten_runtime/binding/cpp/ten.h"
 #include "ten_utils/macro/check.h"
 #include "tts.h"
+#include "tmpl.h"
 
 namespace azure_tts_extension {
+
+std::string trimString(const std::string& input) {
+  std::string result = input;
+  std::string::size_type pos;
+
+  // Remove all occurrences of "\n"
+  while ((pos = result.find("\\n")) != std::string::npos) {
+    result.erase(pos, 2);
+  }
+
+  // Remove all occurrences of "\r"
+  while ((pos = result.find("\\r")) != std::string::npos) {
+    result.erase(pos, 2);
+  }
+
+  // Remove all occurrences of "\t"
+  while ((pos = result.find("\\t")) != std::string::npos) {
+    result.erase(pos, 2);
+  }
+  return result;
+}
 
 class azure_tts_extension_t : public ten::extension_t {
  public:
@@ -34,13 +57,18 @@ class azure_tts_extension_t : public ten::extension_t {
     // read properties
     auto key = ten.get_property_string("azure_subscription_key");
     auto region = ten.get_property_string("azure_subscription_region");
-    auto voice_name = ten.get_property_string("azure_synthesis_voice_name");
-    if (key.empty() || region.empty() || voice_name.empty()) {
+    voice_ = ten.get_property_string("azure_synthesis_voice_name");
+    if (key.empty() || region.empty() || voice_.empty()) {
       AZURE_TTS_LOGE(
           "azure_subscription_key, azure_subscription_region, azure_synthesis_voice_name should not be empty, start "
           "failed");
       return;
     }
+
+    style_ = ten.get_property_string("style");
+    prosody_ = ten.get_property_string("prosody");
+    language_ = ten.get_property_string("language");
+    role_ = ten.get_property_string("role");
 
     ten_proxy_ = std::unique_ptr<ten::ten_env_proxy_t>(ten::ten_env_proxy_t::create(ten));
     TEN_ASSERT(ten_proxy_ != nullptr, "ten_proxy should not be nullptr");
@@ -83,7 +111,7 @@ class azure_tts_extension_t : public ten::extension_t {
     azure_tts_ = std::make_unique<AzureTTS>(
         key,
         region,
-        voice_name,
+        voice_,
         Microsoft::CognitiveServices::Speech::SpeechSynthesisOutputFormat::Raw16Khz16BitMonoPcm,
         pcm_frame_size,
         std::move(pcm_callback));
@@ -132,10 +160,22 @@ class azure_tts_extension_t : public ten::extension_t {
       AZURE_TTS_LOGD("input text is empty, ignored");
       return;
     }
-    AZURE_TTS_LOGI("input text: [%s]", text.c_str());
 
+    text = trimString(text);
     // push received text to tts queue for synthesis
-    azure_tts_->Push(text);
+    if (!prosody_.empty() || !language_.empty() || !role_.empty() || !style_.empty()) {
+      MsttsTemplate tmpl;
+      auto ssml_text = tmpl.replace(json{{"role", role_},
+                                    {"voice", voice_},
+                                    {"language", language_},
+                                    {"style", style_},
+                                    {"prosody", prosody_},
+                                    {"text", text}});
+      AZURE_TTS_LOGI("input ssml text: [%s]", ssml_text.c_str());
+      azure_tts_->Push(ssml_text, true);
+    } else {
+      azure_tts_->Push(text, false);
+    }
   }
 
   // on_stop will be called when the extension is stopping.
@@ -157,8 +197,15 @@ class azure_tts_extension_t : public ten::extension_t {
 
   std::unique_ptr<AzureTTS> azure_tts_;
 
+  std::string voice_;
+  std::string prosody_;
+  std::string language_;
+  std::string role_;
+  std::string style_;
+
   const std::string kCmdNameFlush{"flush"};
   const std::string kDataFieldText{"text"};
+  const std::string kDataFieldSSML{"ssml"};
 };
 
 TEN_CPP_REGISTER_ADDON_AS_EXTENSION(azure_tts, azure_tts_extension_t);
