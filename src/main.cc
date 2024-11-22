@@ -163,11 +163,11 @@ class azure_tts_extension_t : public ten::extension_t {
 
     text = trimString(text);
     // push received text to tts queue for synthesis
-    if (!prosody_.empty() || !language_.empty() || !role_.empty() || !style_.empty()) {
+    if (!language_.empty() && (!prosody_.empty() || !role_.empty() || !style_.empty())) {
       MsttsTemplate tmpl;
       auto ssml_text = tmpl.replace(json{{"role", role_},
                                     {"voice", voice_},
-                                    {"language", language_},
+                                    {"lang", language_},
                                     {"style", style_},
                                     {"prosody", prosody_},
                                     {"text", text}});
