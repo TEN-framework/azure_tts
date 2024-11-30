@@ -161,6 +161,12 @@ class azure_tts_extension_t : public ten::extension_t {
       return;
     }
 
+    auto quiet = data->get_property_bool(kDataFieldQuiet.c_str());
+    if (quiet) {
+      AZURE_TTS_LOGD("input text is empty, ignored");
+      return;
+    }
+
     text = trimString(text);
     // push received text to tts queue for synthesis
     if (!language_.empty() && (!prosody_.empty() || !role_.empty() || !style_.empty())) {
@@ -205,6 +211,7 @@ class azure_tts_extension_t : public ten::extension_t {
 
   const std::string kCmdNameFlush{"flush"};
   const std::string kDataFieldText{"text"};
+  const std::string kDataFieldQuiet{"quiet"};
   const std::string kDataFieldSSML{"ssml"};
 };
 
