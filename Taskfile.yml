@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  clean:
+    desc: clean up
+    cmds:
+      - rm -rf out .ten .gnfiles .gn compile_commands.json
+
+  build:
+    desc: build, with optional 'BUILD_TYPE=debug/release'
+    vars:
+      BUILD_TYPE: '{{ .BUILD_TYPE | default "release" }}'
+    cmds:
+      - task: install
+      - tgn gen linux x64 {{ .BUILD_TYPE }} -- is_clang=false {{ .CLI_ARGS }}
+      - tgn build linux x64 {{ .BUILD_TYPE }}
+
+  test:
+    desc: run tests
+    cmds:
+      - echo TODO
+
+  install:
+    desc: install dependencies
+    cmds:
+      - tman install

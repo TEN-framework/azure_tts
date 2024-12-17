@@ -4,3 +4,4 @@ out
 .gnfiles
 compile_commands.json
 lib/libazure_tts.so
+.cache
