@@ -28,7 +28,7 @@ TEN extension of [azure Text to speech service](https://learn.microsoft.com/en-u
 Only `linux/amd64` building inside container is supported at the moment.      
 
 ```bash
-# inside docker ghcr.io/ten-framework/ten_agent_build:0.3.2
+# inside docker ghcr.io/ten-framework/ten_agent_build:0.3.3
 
 task build
 ```     

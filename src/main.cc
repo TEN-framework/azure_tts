@@ -15,12 +15,12 @@
 #include "log.h"
 #include "ten_runtime/binding/cpp/ten.h"
 #include "ten_utils/macro/check.h"
-#include "tts.h"
 #include "tmpl.h"
+#include "tts.h"
 
 namespace azure_tts_extension {
 
-std::string trimString(const std::string& input) {
+std::string trimString(const std::string &input) {
   std::string result = input;
   std::string::size_type pos;
 
@@ -43,7 +43,7 @@ std::string trimString(const std::string& input) {
 
 class azure_tts_extension_t : public ten::extension_t {
  public:
-  explicit azure_tts_extension_t(const std::string &name) : extension_t(name) {}
+  explicit azure_tts_extension_t(const char *name) : extension_t(name) {}
 
   // on_start will be called when the extension is starting,
   // properies can be read here to initialize and start the extension.
@@ -166,11 +166,11 @@ class azure_tts_extension_t : public ten::extension_t {
     if (!language_.empty() && (!prosody_.empty() || !role_.empty() || !style_.empty())) {
       MsttsTemplate tmpl;
       auto ssml_text = tmpl.replace(json{{"role", role_},
-                                    {"voice", voice_},
-                                    {"lang", language_},
-                                    {"style", style_},
-                                    {"prosody", prosody_},
-                                    {"text", text}});
+                                         {"voice", voice_},
+                                         {"lang", language_},
+                                         {"style", style_},
+                                         {"prosody", prosody_},
+                                         {"text", text}});
       AZURE_TTS_LOGI("input ssml text: [%s]", ssml_text.c_str());
       azure_tts_->Push(ssml_text, true);
     } else {
