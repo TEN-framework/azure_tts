@@ -23,4 +23,4 @@ tasks:
   install:
     desc: install dependencies
     cmds:
-      - tman install
+      - tman install --standalone
