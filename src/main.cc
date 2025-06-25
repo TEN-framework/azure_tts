@@ -140,12 +140,12 @@ class azure_tts_extension_t : public ten::extension_t {
       auto ret = ten.send_cmd(ten::cmd_t::create(kCmdNameFlush.c_str()));
       if (!ret) {
         AZURE_TTS_LOGE("Failed to send cmd %s", kCmdNameFlush.c_str());
-        ten.return_result(ten::cmd_result_t::create(TEN_STATUS_CODE_ERROR), std::move(cmd));
+        ten.return_result(ten::cmd_result_t::create(TEN_STATUS_CODE_ERROR, *cmd));
       } else {
-        ten.return_result(ten::cmd_result_t::create(TEN_STATUS_CODE_OK), std::move(cmd));
+        ten.return_result(ten::cmd_result_t::create(TEN_STATUS_CODE_OK, *cmd));
       }
     } else {
-      ten.return_result(ten::cmd_result_t::create(TEN_STATUS_CODE_OK), std::move(cmd));
+      ten.return_result(ten::cmd_result_t::create(TEN_STATUS_CODE_OK, *cmd));
     }
   }
 
